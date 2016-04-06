@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:util="http://www.springframework.org/schema/util" 
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		  	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+  			http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+  			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+	
+	<context:component-scan base-package="com.hrms.controller"></context:component-scan>
+	<mvc:annotation-driven></mvc:annotation-driven>
+	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306/leave"></property>
+		<property name="Username" value="root"></property>
+		<property name="Password" value="root"></property>
+	</bean>
+	
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="annotatedClasses">
+			<list>
+				<value>com.hrms.domain.entity.User</value>
+				<value>com.hrms.domain.entity.Attendance</value>
+				<value>com.hrms.domain.entity.EmployeeBasicProfile</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="message"></property>
+	</bean>
+	
+	<bean id="txManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/WEB-INF/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+	
+    <bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"></bean>
+    
+    <bean id="userDao" class = "com.hrms.dao.UserDaoImpl"></bean>
+    <bean id="userService" class="com.hrms.domain.services.UserServiceImpl"></bean>
+    
+    <bean id="adminDao" class="com.hrms.dao.AdminDaoImpl"></bean>
+    <bean id="adminService" class="com.hrms.domain.services.AdminServiceImpl"></bean>
+    
+    
+    <mvc:resources mapping="/WEB-INF/**" location="/WEB-INF/"></mvc:resources> 
+    <mvc:resources mapping="/fonts/**" location="/fonts/" />
+    <mvc:resources mapping="/css/**" location="/css/" />
+    <mvc:resources mapping="/js/**" location="/js/" />
+    <mvc:resources mapping="/img/**" location="/img/" />
+    <mvc:resources mapping="/HTML/**" location="/HTML/" />
+</beans>
